@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include("./components/header.ejs"); %>
+    <header>
+        <%- include("./components/navbar.ejs"); %>
+    </header>
+
+    <body>
+
+        <div class="conteudo">
+            <div class="imagem">
+                <img src="styles/img.jpeg" alt="">
+            </div>
+            <form id="teste" class="col-sm-6" action="/login" method="POST">
+                <input type="text" name="username" placeholder="Insira seu nome de usuário" />
+                <input type="password" name="password" placeholder="Insira sua senha" />
+                <button type="submit">Login</button>
+                <a href="/register">Não tem cadastro? Registre-se aqui</a>
+            </form>
+        </div>
+
+    </body>
+
+</html>

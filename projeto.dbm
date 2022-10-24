@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+ Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="0.9.4" use-changelog="false" last-position="101,0" last-zoom="0.5" max-obj-count="10"
+	 default-schema="public" default-owner="postgres"
+	 layers="Default layer"
+	 active-layers="0"
+	 layer-name-colors="#000000"
+	 layer-rect-colors="#b4b4b4"
+	 show-layer-names="false" show-layer-rects="false">
+<database name="new_database" is-template="false" allow-conns="true">
+</database>
+
+<schema name="public" layers="0" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<table name="users" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="80" y="20"/>
+	<column name="id" not-null="true"
+	 identity-type="ALWAYS" start="1" increment="1">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="username" not-null="true">
+		<type name="varchar" length="120"/>
+	</column>
+	<column name="password" not-null="true">
+		<type name="varchar" length="90"/>
+	</column>
+	<column name="email" not-null="true">
+		<type name="varchar" length="90"/>
+	</column>
+	<constraint name="users_pk" type="pk-constr" table="public.users">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="requisitos_de_usuario" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="400" y="440"/>
+	<column name="id" not-null="true"
+	 identity-type="ALWAYS" start="1" increment="1">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="descritivo" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<constraint name="requisitos_de_usuario_pk" type="pk-constr" table="public.requisitos_de_usuario">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="requisitos_funcionais" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="540" y="700"/>
+	<column name="id" not-null="true"
+	 identity-type="ALWAYS" start="1" increment="1">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="nome">
+		<type name="varchar" length="120"/>
+	</column>
+	<constraint name="requisitos_funcionais_pk" type="pk-constr" table="public.requisitos_funcionais">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="condicoes" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="800" y="400"/>
+	<column name="id" not-null="true"
+	 identity-type="ALWAYS" start="1" increment="1">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="tipo´" not-null="true">
+		<type name="varchar" length="30"/>
+	</column>
+	<constraint name="condicoes_pk" type="pk-constr" table="public.condicoes">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="projeto" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="100" y="260"/>
+	<column name="id" not-null="true"
+	 identity-type="ALWAYS" start="1" increment="1">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="nome" not-null="true">
+		<type name="varchar" length="90"/>
+	</column>
+	<column name="descricao">
+		<type name="text" length="0"/>
+	</column>
+	<constraint name="projeto_pk" type="pk-constr" table="public.projeto">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="users_has_many_projeto" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#3e52d7"
+	 src-table="public.users"
+	 dst-table="public.projeto"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="projeto_has_many_requisitos_de_usuario" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#57b8bd"
+	 src-table="public.projeto"
+	 dst-table="public.requisitos_de_usuario"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="requisitos_de_usuario_has_many_requisitos_funcionais" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#801634"
+	 src-table="public.requisitos_de_usuario"
+	 dst-table="public.requisitos_funcionais"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="requisitos_funcionais_has_many_condicoes" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#ac427c"
+	 src-table="public.requisitos_funcionais"
+	 dst-table="public.condicoes"
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="0" y="0"/>
+	</label>
+</relationship>
+
+<table name="requisitos_de_crud" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="260" y="940"/>
+	<column name="id" not-null="true"
+	 identity-type="ALWAYS" start="1" increment="1">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="tipo" not-null="true">
+		<type name="varchar" length="20"/>
+	</column>
+	<constraint name="requisitos_de_crud_pk" type="pk-constr" table="public.requisitos_de_crud">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="requisitos_funcionais_has_many_requisitos_de_crud" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#4a86e6"
+	 src-table="public.requisitos_funcionais"
+	 dst-table="public.requisitos_de_crud"
+	 src-required="false" dst-required="false"/>
+
+<table name="entidades" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="260" y="1160"/>
+	<column name="id" not-null="true"
+	 identity-type="ALWAYS" start="1" increment="1">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="nome">
+		<type name="varchar" length="120"/>
+	</column>
+	<constraint name="entidades_pk" type="pk-constr" table="public.entidades">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="atributos" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="180" y="1380"/>
+	<column name="id" not-null="true"
+	 identity-type="ALWAYS" start="1" increment="1">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="nome" not-null="true">
+		<type name="varchar" length="120"/>
+	</column>
+	<column name="tipo">
+		<type name="varchar" length="20"/>
+	</column>
+	<column name="tamanho">
+		<type name="varchar" length="4"/>
+	</column>
+	<constraint name="atributos_pk" type="pk-constr" table="public.atributos">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="entidades_has_many_atributos" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#f0c9c3"
+	 src-table="public.entidades"
+	 dst-table="public.atributos"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="requisitos_de_crud_has_many_entidades" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#34037d"
+	 src-table="public.requisitos_de_crud"
+	 dst-table="public.entidades"
+	 src-required="false" dst-required="false"/>
+
+<table name="requisitos_de_processamento" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="900" y="960"/>
+	<column name="id" not-null="true"
+	 identity-type="ALWAYS" start="1" increment="1">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="descricao">
+		<type name="varchar" length="120"/>
+	</column>
+	<constraint name="requisitos_de_processamento_pk" type="pk-constr" table="public.requisitos_de_processamento">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="requisitos_funcionais_has_many_requisitos_de_processamento" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#40c54d"
+	 src-table="public.requisitos_funcionais"
+	 dst-table="public.requisitos_de_processamento"
+	 src-required="false" dst-required="false"/>
+
+</dbmodel>

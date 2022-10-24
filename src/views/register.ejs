@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include("./components/header.ejs"); %>
+
+<header>
+    <%- include("./components/navbar.ejs"); %>
+</header>
+<body>
+    <div class="conteudo">
+        <div class="imagem">
+            <img src="/gettyimages-1219996043-612x612.jpeg" alt="">
+        </div>
+            <form class="col-sm-6" action="/register" method="POST">
+                <input  type="text" name="username" id="username" placeholder="Insira seu nome de usuário" />
+                <input  type="password" name="senha" placeholder="Insira sua senha" />
+                <input type="email" name="email" placeholder="Insira seu email" />
+                <button type="submit">Registrar</button>
+              </form>
+    </div>
+</body>
+</html>

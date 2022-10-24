@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include("./components/header.ejs"); %>
+<header>
+    <%- include("./components/navbar.ejs"); %>
+</header>
+<body>
+    <div class="conteudo">
+        <form action="/cadastro-requisito" method="post" >
+            <div class="texto">
+                <input type="text" name="pre" value="O sistema deve"  />
+                <select name="crud">
+                    <option value="inserir">inserir</option>
+                    <option value="excluir">excluir</option>
+                    <option value="editar">editar</option>
+                    <option value="atualizar">atualizar</option>
+                </select>
+                <input class="input-menor" type="text" name="um" value="um(a)" disabled />
+                <input type="text" name="entidade" placeholder="entidade" />
+                <input class="input-menor" type="text" name="com" value="com" disabled />
+                <input type="text" name="atributos" placeholder="atributos" />
+            </div>
+            <button type="submit">Enviar</button>
+        </div>
+            
+        </form>
+</body>
+
+</html>
