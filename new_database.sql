@@ -17,7 +17,7 @@ CREATE DATABASE new_database;
 -- DROP TABLE IF EXISTS public.users CASCADE;
 CREATE TABLE public.users (
 	id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT BY 1 START WITH 1 ),
-	username varchar(120) NOT NULL,
+	username varchar(120) UNIQUE NOT NULL,
 	password varchar(90) NOT NULL,
 	email varchar(90) NOT NULL,
 	CONSTRAINT users_pk PRIMARY KEY (id)
@@ -181,4 +181,7 @@ REFERENCES public.requisitos_funcionais (id) MATCH FULL
 ON DELETE SET NULL ON UPDATE CASCADE;
 -- ddl-end --
 
+
+-- alter table users column name unique;
+alter table users add constraint users_name_unique unique (name);
 

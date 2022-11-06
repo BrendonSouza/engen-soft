@@ -15,7 +15,8 @@ router.post('/login', async (req, res) => {
     const password = req.body.password;
     db.query("SELECT * FROM users WHERE username = $1", [username], async (err, result) => {
 
-        if (err) throw err;
+        if (err)
+            throw err;
 
         if (result.rows.length > 0) {
             const { id, email } = result.rows[0];
@@ -26,7 +27,15 @@ router.post('/login', async (req, res) => {
                 console.log("Logged in");
                 res.redirect('/cadastro-requisito');
             }
+            else {
+                res.render("login.ejs", { options: { error: "Senha incorreta" } });
+            }
         }
+        else {
+            res.render("login.ejs", { options: { error: "Usuário não encontrado" } });
+        }
+
+
     });
 });
 
@@ -39,9 +48,12 @@ router.post('/register', async (req, res) => {
     let { username, senha, email } = req.body;
     senha = await bcrypt.hash(senha, 10);
     const sql = `INSERT INTO users (username, password, email) VALUES ('${username}', '${senha}', '${email}')  RETURNING id`
+   
     db.query(sql, (err, result) => {
-        console.log(result.rows[0].id);
-        if (err) throw err;
+        
+        if (err){
+            return res.render("register.ejs", { options: { error: "Username já existe" } });
+        }
         res.redirect("/login");
     })
 })
@@ -58,31 +70,32 @@ router.get('/cadastro-requisito', (req, res) => {
     //recupera os projetos do usuário
     const sql = `SELECT * FROM projeto WHERE id_users = ${req.session.user.id}`
     db.query(sql, (err, result) => {
-        if (err) throw err;
-        res.render("cadastro-requisito.ejs", { options: { filecss: "styles/requisitos.css",projects: result.rows } });
+        if (err||result.rowCount == 0){
+            return res.redirect('/incluir-projeto');
+        }
+        res.render("cadastro-requisito.ejs", { options: { filecss: "styles/requisitos.css", projects: result.rows } });
     })
     // res.render("cadastro-requisito.ejs", { options: { filecss: "styles/requisitos.css" } });
 })
 
 router.post('/cadastro-requisito', async (req, res) => {
-    const { crud, entidade, atributos,projeto } = req.body;
+    const { crud, entidade, atributos, projeto } = req.body;
     console.log(projeto)
     const { pre, um, com } = { pre: "O sistema deve", um: "um(a)", com: "com" }
     const descricao = `${pre} ${crud} ${um} ${entidade} ${com} ${atributos}`;
     const sql = `INSERT INTO requisitos_de_usuario (descritivo, id_projeto) VALUES ('${descricao}', ${projeto}) RETURNING id`
-    var id;
     const idRequsitoUsuario = (await db.query(sql)).rows[0].id;
 
     const nomeReq = "RF0" + idRequsitoUsuario;
-    
-    const sql2 = `INSERT INTO requisitos_funcionais (id_requisitos_de_usuario) VALUES (${idRequsitoUsuario}) RETURNING id`
+
+    const sql2 = `INSERT INTO requisitos_funcionais (id_requisitos_de_usuario, nome) VALUES (${idRequsitoUsuario},${nomeReq}) RETURNING id`
     const idRequsitoFuncional = (await db.query(sql2)).rows[0].id;
 
     const sql3 = ` INSERT INTO requisitos_de_crud (tipo, id_requisitos_funcionais) VALUES ('${crud}', ${idRequsitoFuncional}) RETURNING id`
-    const idRequisitoCrud =  (await db.query(sql3)).rows[0].id;
+    const idRequisitoCrud = (await db.query(sql3)).rows[0].id;
 
     const sql4 = ` INSERT INTO entidades (nome,id_requisitos_de_crud ) VALUES ('${entidade}', ${idRequisitoCrud}) RETURNING id`
-    const idEntidade =  (await db.query(sql4)).rows[0].id;
+    const idEntidade = (await db.query(sql4)).rows[0].id;
 
     // //separa atributos por virgula
     const atributosArray = atributos.split(",");

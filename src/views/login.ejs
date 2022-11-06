@@ -15,6 +15,7 @@
             <form id="teste" class="col-sm-6" action="/login" method="POST">
                 <input type="text" name="username" placeholder="Insira seu nome de usuário" />
                 <input type="password" name="password" placeholder="Insira sua senha" />
+                <p><%= options.error%></p>
                 <button type="submit">Login</button>
                 <a href="/register">Não tem cadastro? Registre-se aqui</a>
             </form>
