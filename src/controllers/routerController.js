@@ -9,6 +9,7 @@ router.get('/login', (req, res) => {
     res.render("login.ejs", { options: {} });
 })
 
+
 router.post('/login', async (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
@@ -34,6 +35,7 @@ router.get('/register', (req, res) => {
 })
 
 router.post('/register', async (req, res) => {
+    //TODO incluir validação de nome repetido
     let { username, senha, email } = req.body;
     senha = await bcrypt.hash(senha, 10);
     const sql = `INSERT INTO users (username, password, email) VALUES ('${username}', '${senha}', '${email}')  RETURNING id`
@@ -48,15 +50,26 @@ router.post('/register', async (req, res) => {
 router.use(authMiddleware);
 //rotas protegidas
 
+router.get('/incluir-projeto', (req, res) => {
+    res.render("inserir-projeto.ejs", { options: {} });
+})
+
 router.get('/cadastro-requisito', (req, res) => {
-    res.render("cadastro-requisito.ejs", { options: { filecss: "styles/requisitos.css" } });
+    //recupera os projetos do usuário
+    const sql = `SELECT * FROM projeto WHERE id_users = ${req.session.user.id}`
+    db.query(sql, (err, result) => {
+        if (err) throw err;
+        res.render("cadastro-requisito.ejs", { options: { filecss: "styles/requisitos.css",projects: result.rows } });
+    })
+    // res.render("cadastro-requisito.ejs", { options: { filecss: "styles/requisitos.css" } });
 })
 
 router.post('/cadastro-requisito', async (req, res) => {
-    const { crud, entidade, atributos } = req.body;
+    const { crud, entidade, atributos,projeto } = req.body;
+    console.log(projeto)
     const { pre, um, com } = { pre: "O sistema deve", um: "um(a)", com: "com" }
     const descricao = `${pre} ${crud} ${um} ${entidade} ${com} ${atributos}`;
-    const sql = `INSERT INTO requisitos_de_usuario (descritivo, id_projeto) VALUES ('${descricao}', 1) RETURNING id`
+    const sql = `INSERT INTO requisitos_de_usuario (descritivo, id_projeto) VALUES ('${descricao}', ${projeto}) RETURNING id`
     var id;
     const idRequsitoUsuario = (await db.query(sql)).rows[0].id;
 
@@ -82,6 +95,19 @@ router.post('/cadastro-requisito', async (req, res) => {
     })
     res.redirect("/cadastro-requisito");
 
+})
+
+router.post('/incluir-projeto', async (req, res) => {
+
+    //TODO Incluir validação de nome repetido
+    const { nome, descricao } = req.body;
+    const user_id = req.session.user.id;
+
+    const sql = `INSERT INTO projeto (nome, descricao,id_users) VALUES ('${nome}', '${descricao}',${user_id}) RETURNING id`
+    db.query(sql, (err, result) => {
+        if (err) throw err;
+        res.redirect("/cadastro-requisito");
+    })
 })
 
 exports = module.exports = router;

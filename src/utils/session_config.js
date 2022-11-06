@@ -1,7 +1,7 @@
 
 
 const Session = require('express-session');
-const env = require('dotenv').config()
+
 
 
 const session = Session({

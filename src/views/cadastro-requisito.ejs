@@ -7,6 +7,11 @@
 <body>
     <div class="conteudo">
         <form action="/cadastro-requisito" method="post" >
+            <select name="projeto" id="projeto">
+                <% for (let i = 0; i < options.projects.length; i++) { %>
+                    <option value="<%= options.projects[i].id %>"><%= options.projects[i].nome %></option>
+                <% } %>
+            </select>
             <div class="texto">
                 <input type="text" name="pre" value="O sistema deve"  />
                 <select name="crud">

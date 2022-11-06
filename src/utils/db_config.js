@@ -1,5 +1,7 @@
 const { Client } = require('pg');
-require("dotenv").config()
+const path = require('path'); 
+
+
 
 const database = new Client({
     host: process.env.DATABASE_HOST,
