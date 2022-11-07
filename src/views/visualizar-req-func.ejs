@@ -12,6 +12,7 @@
                     <tr>
                         <th scope="col">Num. Req</th>
                         <th scope="col">Nome</th>
+                        <th scope="col">Entidade</th>
                         <th scope="col">Tipo</th>
                         <th scope="col">CRUD</th>
                         <th scope="col">get/set</th>
@@ -29,6 +30,9 @@
                             <td>
                                 <%= options.requisitos[i].nome %>
                             </td>
+                            <td>
+                                <%= options.requisitos[i].entidade %>
+                            </td>
                             <td>crud</td>
                             <td>
                                 <%= options.requisitos[i].tipo %>
@@ -42,6 +46,7 @@
                                     <% for (let j=0; j < options.requisitos[i].condicoes.length; j++) { %>
                                         <%= options.requisitos[i].condicoes[j].condicao%> &lt;<%=
                                                 options.requisitos[i].condicoes[j].nome %>&gt;
+                                                <br>
                                     <% } %>
                                 <% } else{ %>
                                     *

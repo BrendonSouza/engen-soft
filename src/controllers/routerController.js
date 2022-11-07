@@ -87,7 +87,7 @@ router.get('/cadastro-requisito', (req, res) => {
 router.post('/cadastro-requisito', async (req, res) => {
     const { crud, entidade, atributos, projeto } = req.body;
     const { pre, um, com } = { pre: "O sistema deve", um: "um(a)", com: "com" }
-    const descricao = `${pre} ${crud} ${um} ${entidade} ${com} ${atributos}`;
+    const descricao = `${pre} ${crud} ${um} ${entidade.toLowerCase()} ${com} ${atributos.toLowerCase()}`;
     const sql = `INSERT INTO requisitos_de_usuario (descritivo, id_projeto) VALUES ('${descricao}', ${projeto}) RETURNING id`
     const idRequsitoUsuario = (await db.query(sql)).rows[0].id;
 
@@ -99,11 +99,11 @@ router.post('/cadastro-requisito', async (req, res) => {
     const sql3 = ` INSERT INTO requisitos_de_crud (tipo, id_requisitos_funcionais) VALUES ('${crud}', ${idRequsitoFuncional}) RETURNING id`
     const idRequisitoCrud = (await db.query(sql3)).rows[0].id;
 
-    const sql4 = ` INSERT INTO entidades (nome,id_requisitos_de_crud ) VALUES ('${entidade}', ${idRequisitoCrud}) RETURNING id`
+    const sql4 = ` INSERT INTO entidades (nome,id_requisitos_de_crud ) VALUES ('${entidade.toLowerCase()}', ${idRequisitoCrud}) RETURNING id`
     const idEntidade = (await db.query(sql4)).rows[0].id;
 
     // //separa atributos por virgula
-    const atributosArray = atributos.split(",");
+    const atributosArray = atributos.toLowerCase().split(",");
     atributosArray.forEach((atributo) => {
         const sql5 = ` INSERT INTO atributos (nome, id_entidades) VALUES ('${atributo}', ${idEntidade})`
         db.query(sql5, (err, result) => {
@@ -161,6 +161,7 @@ router.get('/visualiza-reqfunc',async(req,res)=>{
                     }
                     
                     obj.nome = crud.tipo +" "+ crud.nome;
+                    obj.entidade = crud.nome;
                 })
                 const sql3 = `SELECT * FROM condicoes_teste  ct inner join requisitos_funcionais rf on ct.id_requisitos_funcionais1 = rf.id where id_requisitos_funcionais = ${obj.id}`
                 const condicoes = (await db.query(sql3)).rows;
@@ -170,6 +171,7 @@ router.get('/visualiza-reqfunc',async(req,res)=>{
                 else{
                     obj.condicoes = [{condicao:"*"}];
                 }
+               
            objetos.push(obj);
         })
     )
