@@ -1,34 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <%- include("./components/header.ejs"); %>
-<header>
-    <%- include("./components/navbar.ejs"); %>
-</header>
-<body>
-    <div class="conteudo">
-        <form action="/cadastro-requisito" method="post" >
-            <select name="projeto" id="projeto" class="form-select">
-                <% for (let i = 0; i < options.projects.length; i++) { %>
-                    <option value="<%= options.projects[i].id %>"><%= options.projects[i].nome %></option>
-                <% } %>
-            </select>
-            <div class="texto">
-                <input type="text" name="pre" value="O sistema deve"  />
-                <select name="crud">
-                    <option value="inserir">inserir</option>
-                    <option value="excluir">excluir</option>
-                    <option value="editar">editar</option>
-                    <option value="atualizar">atualizar</option>
-                </select>
-                <input class="input-menor" type="text" name="um" value="um(a)" disabled />
-                <input type="text" name="entidade" placeholder="entidade" />
-                <input class="input-menor" type="text" name="com" value="com" disabled />
-                <input type="text" name="atributos" placeholder="atributos" />
-            </div>
-            <button type="submit">Enviar</button>
+    <header>
+        <%- include("./components/navbar.ejs"); %>
+    </header>
+
+    <body>
+        <div class="conteudo mt-5">
+            <form action="/cadastro-requisito" method="post">
+                <div class="row ps-4">
+                    <div class="col-4">
+                        <label for="nome" style="color: white;">Nome do requisito</label>
+                        <select name="projeto" id="projeto" class="form-select form-select-sm">
+                            <% for (let i=0; i < options.projects.length; i++) { %>
+                                <option value="<%= options.projects[i].id %>">
+                                    <%= options.projects[i].nome %>
+                                </option>
+                                <% } %>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="texto mt-5 row d-flex">
+                    <input type="text" class="col-2" name="pre" value="O sistema deve" />
+                    <div class="col-2">
+                        <select name="crud" class="form-select form-select-sm">
+                            <option value="inserir">inserir</option>
+                            <option value="excluir">excluir</option>
+                            <option value="editar">editar</option>
+                            <option value="atualizar">atualizar</option>
+                        </select>
+
+                    </div>
+                    <input class="input-menor col-2 col-sm-12" type="text" name="um" value="um(a)" disabled />
+                    <input type="text" name="entidade" placeholder="entidade"class="col-2" />
+                    <input class="input-menor col-2" type="text" name="com" value="com" disabled />
+                    <input type="text" name="atributos" placeholder="atributos" class="col-2"/>
+                </div>
+                <div class="ps-4">
+                    <button type="submit">Enviar</button>
+
+                </div>
         </div>
-            
+
         </form>
-</body>
+    </body>
 
 </html>
