@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include("./components/header.ejs"); %>
+    <header>
+        <%- include("./components/navbar.ejs"); %>
+    </header>
+
+    <body>
+        <div class="p-5">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Num. Req</th>
+                        <th scope="col">Nome</th>
+                        <th scope="col">Tipo</th>
+                        <th scope="col">CRUD</th>
+                        <th scope="col">get/set</th>
+                        <th scope="col">Condições</th>
+                        <th scope="col">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <% for (let i=0; i < options.requisitos.length; i++) { %>
+                        <tr>
+                            <th scope="row">
+                                <%= options.requisitos[i].numReq %>
+                            </th>
+                            <td>
+                                <%= options.requisitos[i].nome %>
+                            </td>
+                            <td>crud</td>
+                            <td>
+                                <%= options.requisitos[i].tipo %>
+                            </td>
+                            <td>
+                                <%= options.requisitos[i].getSet %>
+                            </td>
+                            <td>
+                                <% if(options.requisitos[i].condicoes.length>=1 &&
+                                    options.requisitos[i].condicoes[0].condicao != '*') { %>
+                                    <% for (let j=0; j < options.requisitos[i].condicoes.length; j++) { %>
+                                        <%= options.requisitos[i].condicoes[j].condicao%> &lt;<%=
+                                                options.requisitos[i].condicoes[j].nome %>&gt;
+                                    <% } %>
+                                <% } else{ %>
+                                    *
+                                <% } %>
+                            </td>
+                            <td class="col-3">
+
+                                <a class="btn btn-primary">Editar</a>
+                                <a class="btn btn-secondary">Excluir</a>
+
+                                <a href="/associar/<%= options.requisitos[i].id %>"
+                                    class="btn btn-secondary">Associar</a>
+                            </td>
+                        </tr>
+                        <% } %>
+                </tbody>
+
+            </table>
+
+            <button type="button" class="col-12">Mostrar Diagrama de casos de uso</button>
+            <div id="myDiagramDiv" style=" border: solid 1px black; width: 100%; height: 400px; visibility: hidden;"></div>
+        </div>
+    </body>
+    <script src="https://unpkg.com/gojs/release/go-debug.js"></script>
+    <script id="code">
+        var nodes = <%- JSON.stringify(options.requisitos) %>;
+        //verifica click no botão
+        var btn = document.querySelector('button');
+        btn.addEventListener('click',()=>{
+            var diagrama = document.getElementById("myDiagramDiv");
+            if(diagrama.style.visibility == 'hidden'){
+                diagrama.style.visibility = 'visible';
+            }else{
+                diagrama.style.visibility = 'hidden';
+            }
+            
+            
+        })
+    </script>
+    <script src="/scripts/casoDeUtils.js"></script>
+</html>

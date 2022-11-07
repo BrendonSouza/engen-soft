@@ -7,7 +7,7 @@
 <body>
     <div class="conteudo">
         <form action="/cadastro-requisito" method="post" >
-            <select name="projeto" id="projeto">
+            <select name="projeto" id="projeto" class="form-select">
                 <% for (let i = 0; i < options.projects.length; i++) { %>
                     <option value="<%= options.projects[i].id %>"><%= options.projects[i].nome %></option>
                 <% } %>

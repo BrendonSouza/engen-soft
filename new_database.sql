@@ -54,7 +54,7 @@ ALTER TABLE public.requisitos_funcionais OWNER TO postgres;
 -- DROP TABLE IF EXISTS public.condicoes CASCADE;
 CREATE TABLE public.condicoes (
 	id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT BY 1 START WITH 1 ),
-	"tipo´" varchar(30) NOT NULL,
+	tipo varchar(30) NOT NULL,
 	id_requisitos_funcionais integer,
 	CONSTRAINT condicoes_pk PRIMARY KEY (id)
 );
@@ -185,3 +185,5 @@ ON DELETE SET NULL ON UPDATE CASCADE;
 -- alter table users column name unique;
 alter table users add constraint users_name_unique unique (name);
 
+-- muda o nome da coluna tipo` para tipo na tabela condicoes
+-- alter table condicoes rename column tipo to tipo_condicao;

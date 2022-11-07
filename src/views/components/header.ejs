@@ -11,13 +11,10 @@
 
 
   <% if( options.filecss){%>
-    <link href="styles/requisitos.css" rel="stylesheet">
-    <% console.log( options.filecss)%>
-
-      <% } else {%>
-        <link href="styles/css.css" rel="stylesheet">
-        <% } %>
+    <link href="<%=options.filecss%>" rel="stylesheet">
 
 
-
+    <% } else {%>
+      <link href="styles/css.css" rel="stylesheet">
+      <% } %>
 </head>

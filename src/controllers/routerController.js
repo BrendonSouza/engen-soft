@@ -9,6 +9,12 @@ router.get('/login', (req, res) => {
     res.render("login.ejs", { options: {} });
 })
 
+const tipoCrud = {
+    "inserir": "C",
+    "visualizar": "R",
+    "atualizar": "U",
+    "deletar": "D"
+}
 
 router.post('/login', async (req, res) => {
     const username = req.body.username;
@@ -23,9 +29,9 @@ router.post('/login', async (req, res) => {
             const isValid = await bcrypt.compare(password, result.rows[0].password)
             if (isValid) {
                 req.session.user = { id, username, email };
-                console.log(req.session.user);
                 console.log("Logged in");
                 res.redirect('/cadastro-requisito');
+                // res.redirect('/visualiza-reqfunc')
             }
             else {
                 res.render("login.ejs", { options: { error: "Senha incorreta" } });
@@ -80,7 +86,6 @@ router.get('/cadastro-requisito', (req, res) => {
 
 router.post('/cadastro-requisito', async (req, res) => {
     const { crud, entidade, atributos, projeto } = req.body;
-    console.log(projeto)
     const { pre, um, com } = { pre: "O sistema deve", um: "um(a)", com: "com" }
     const descricao = `${pre} ${crud} ${um} ${entidade} ${com} ${atributos}`;
     const sql = `INSERT INTO requisitos_de_usuario (descritivo, id_projeto) VALUES ('${descricao}', ${projeto}) RETURNING id`
@@ -88,7 +93,7 @@ router.post('/cadastro-requisito', async (req, res) => {
 
     const nomeReq = "RF0" + idRequsitoUsuario;
 
-    const sql2 = `INSERT INTO requisitos_funcionais (id_requisitos_de_usuario, nome) VALUES (${idRequsitoUsuario},${nomeReq}) RETURNING id`
+    const sql2 = `INSERT INTO requisitos_funcionais (id_requisitos_de_usuario, nome) VALUES (${idRequsitoUsuario},'${nomeReq}') RETURNING id`
     const idRequsitoFuncional = (await db.query(sql2)).rows[0].id;
 
     const sql3 = ` INSERT INTO requisitos_de_crud (tipo, id_requisitos_funcionais) VALUES ('${crud}', ${idRequsitoFuncional}) RETURNING id`
@@ -122,5 +127,73 @@ router.post('/incluir-projeto', async (req, res) => {
         res.redirect("/cadastro-requisito");
     })
 })
+
+router.get('/visualiza-reqfunc',async(req,res)=>{
+    const sql = `SELECT * FROM requisitos_funcionais`
+    const requisitos = (await db.query(sql)).rows;
+    const objetos =[];
+    await Promise.all(
+        requisitos.map(async(requisito)=>{
+            const obj ={}
+            obj.id = requisito.id;
+            const nome = requisito.nome;
+            obj.numReq = nome;
+            // select * from requisitos_de_crud rdc inner join entidades e on rdc.id = e.id_requisitos_de_crud;
+            const sql2 = `SELECT * FROM requisitos_de_crud rdc inner join entidades e on rdc.id = e.id_requisitos_de_crud where rdc.id_requisitos_funcionais = ${requisito.id}`
+            const crud = (await db.query(sql2)).rows;
+    
+                crud.map(async(crud)=>{
+                    if(crud.tipo == "atualizar"){
+                        obj.getSet = "get/set";
+                        obj.tipo = "U"
+                    }
+                    else if(crud.tipo == "excluir"){
+                        obj.getSet = "get/set";
+                        obj.tipo = "D"
+                    }
+                    else if(crud.tipo == "listar"){
+                        obj.getSet = "get";
+                        obj.tipo = "R";
+                    }
+                    else{
+                        obj.getSet = "set";
+                        obj.tipo = "C";
+                    }
+                    
+                    obj.nome = crud.tipo +" "+ crud.nome;
+                })
+                const sql3 = `SELECT * FROM condicoes_teste  ct inner join requisitos_funcionais rf on ct.id_requisitos_funcionais1 = rf.id where id_requisitos_funcionais = ${obj.id}`
+                const condicoes = (await db.query(sql3)).rows;
+                if(condicoes.length > 0){
+                    obj.condicoes = condicoes;
+                }
+                else{
+                    obj.condicoes = [{condicao:"*"}];
+                }
+           objetos.push(obj);
+        })
+    )
+  
+    res.render('visualizar-req-func.ejs',{options:{requisitos:objetos}});
+})
+
+router.get('/associar/:id',async(req,res)=>{
+    const id = req.params.id;
+    const sql = `SELECT * FROM requisitos_funcionais rf inner join requisitos_de_usuario ru on rf.id_requisitos_de_usuario = ru.id where rf.id = ${id}`
+    const requisito = (await db.query(sql)).rows[0];
+    const sql2 = `SELECT * FROM requisitos_funcionais rf inner join requisitos_de_usuario ru on rf.id_requisitos_de_usuario = ru.id where rf.id != ${id}`
+    const requisitos = (await db.query(sql2)).rows;
+    res.render('associar-requisito.ejs',{options:{requisito,requisitos,id}});
+})
+
+router.post('/associar',async(req,res)=>{
+    const {condicoes,requisito,requisitoa} = req.body;
+    const sql = `INSERT into condicoes_teste (id_requisitos_funcionais, id_requisitos_funcionais1, condicao) VALUES (${requisitoa},${requisito},'${condicoes}')`
+    db.query(sql,(err,result)=>{
+        if(err) throw err;
+        res.redirect('/visualiza-reqfunc');
+    })
+})
+
 
 exports = module.exports = router;
