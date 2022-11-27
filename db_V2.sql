@@ -9,6 +9,8 @@
 -- 
 -- object: teste_db | type: DATABASE --
 -- DROP DATABASE IF EXISTS teste_db;
+
+DROP DATABASE IF EXISTS teste_db;
 CREATE DATABASE teste_db;
 -- ddl-end --
 
