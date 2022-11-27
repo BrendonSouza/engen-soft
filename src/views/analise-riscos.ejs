@@ -11,6 +11,7 @@
         <h2>Análise de Riscos</h2>
         <form action="/analise-de-riscos" method="post" id="form-projeto">
             <select name="projeto" id="projeto" class="form-select form-select-sm">
+                <option >Selecione um projeto</option>
                 <% for (let i=0; i < options.projects.length; i++) { %>
                     <option value="<%= options.projects[i].id %>">
                         <%= options.projects[i].nome %>
