@@ -63,3 +63,20 @@ td{
 th{
     color: whitesmoke;
 }
+
+#projeto{
+    width: 80%;
+    background-color: #7e7ed2;
+    color: white;
+}
+
+#form-projeto{    
+    background-color: rgba(0, 0, 0, 0);
+    width: 30%;
+    margin: 0;
+    flex-direction: row;
+    margin-bottom: 10px;
+}
+h1{
+    color: white;
+}
