@@ -129,11 +129,23 @@ router.post('/incluir-projeto', async (req, res) => {
 })
 
 router.get('/visualiza-reqfunc',async(req,res)=>{
-    const sql = `SELECT * FROM requisitos_funcionais`
+    const projetos = await listProjects(req.session.user.id);
+
+ 
+
+    // requisitos:objetos
+    res.render('visualizar-req-func.ejs',{options:{ projects:projetos, codReq:0}});
+})
+
+router.post('/visualiza-req-func',async(req,res)=>{
+    const projetos = await listProjects(req.session.user.id);
+    const project_id = req.body.projeto;
+    const sql = `SELECT requisitos_funcionais.nome, requisitos_funcionais.id FROM requisitos_funcionais inner join requisitos_de_usuario on requisitos_funcionais.id_requisitos_de_usuario = requisitos_de_usuario.id inner join projeto on requisitos_de_usuario.id_projeto = projeto.id where projeto.id = ${req.body.projeto}`
     const requisitos = (await db.query(sql)).rows;
     const objetos =[];
     await Promise.all(
         requisitos.map(async(requisito)=>{
+            console.log(requisito)
             const obj ={}
             obj.id = requisito.id;
             const nome = requisito.nome;
@@ -175,8 +187,7 @@ router.get('/visualiza-reqfunc',async(req,res)=>{
            objetos.push(obj);
         })
     )
-  
-    res.render('visualizar-req-func.ejs',{options:{requisitos:objetos}});
+    res.render('visualizar-req-func.ejs',{options:{requisitos:objetos, projects:projetos,  selected:project_id, codReq:1}});
 })
 
 router.get('/associar/:id',async(req,res)=>{
@@ -185,7 +196,7 @@ router.get('/associar/:id',async(req,res)=>{
     const requisito = (await db.query(sql)).rows[0];
     const sql2 = `SELECT * FROM requisitos_funcionais rf inner join requisitos_de_usuario ru on rf.id_requisitos_de_usuario = ru.id where rf.id != ${id}`
     const requisitos = (await db.query(sql2)).rows;
-    res.render('associar-requisito.ejs',{options:{requisito,requisitos,id}});
+    res.render('associar-requisito.ejs',{options:{filecss:"styles/requisitos.css", requisito,requisitos,id}});
 })
 
 router.post('/associar',async(req,res)=>{
@@ -196,6 +207,51 @@ router.post('/associar',async(req,res)=>{
         res.redirect('/visualiza-reqfunc');
     })
 })
+
+
+
+
+
+router.get('/analise-de-riscos',async(req,res)=>{
+    // console options redirect
+    const projetos = await listProjects(req.session.user.id);
+    res.render("analise-riscos.ejs", { options: {filecss:"styles/analise-riscos.css",projects: projetos} });
+})
+
+async function listProjects(user_id){
+    const sql = `SELECT * FROM projeto where id_users = ${user_id}`
+    const result = await db.query(sql);
+    return result.rows;
+
+}
+
+router.post('/analise-de-riscos' ,async(req,res)=>{
+    if(req.body.projeto){
+        const project_id = req.body.projeto;
+        const projetos = await listProjects(req.session.user.id);
+        const sql = `SELECT * FROM itens_de_analise_de_riscos where id_projeto = ${project_id}`
+        db.query(sql, (err, result) => {
+            if (err) throw err;
+            res.render("analise-riscos.ejs", { options: {filecss:"styles/analise-riscos.css" ,itens: result.rows, projects: projetos, selected:project_id} });
+        })
+    }
+    else{
+        const body = req.body;
+        const arr = req.body.id
+        const arrResponse = req.body.resposta
+        //convert req.body.id to array of integers
+        const arrIdInt = arr.map((id)=>parseInt(id));
+        console.log(arrIdInt);
+        for(let i = 0; i < arrIdInt.length; i++){
+            const sql = `UPDATE itens_de_analise_de_riscos set resposta = '${arrResponse[i]}' where id = ${arrIdInt[i]}`
+            await db.query(sql);
+        }
+        res.redirect('/analise-de-riscos');
+    }
+   
+
+})
+
 
 
 exports = module.exports = router;

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include("./components/header.ejs"); %>
+<header>
+    <%- include("./components/navbar.ejs"); %>
+</header>
+
+<body>
+    <div class="conteudo">
+        <h2>Análise de Riscos</h2>
+        <form action="/analise-de-riscos" method="post" id="form-projeto">
+            <select name="projeto" id="projeto" class="form-select form-select-sm">
+                <% for (let i=0; i < options.projects.length; i++) { %>
+                    <option value="<%= options.projects[i].id %>">
+                        <%= options.projects[i].nome %>
+                    </option>
+                    <% } %>
+            </select> 
+        </form>
+         <% if(options.itens){ %>
+            <div>
+                <form action="/analise-de-riscos" class="second-form" id="form-analise" method="post">
+                   <table>
+                       <thead>
+                           <tr>
+                               <th>Descricao</th>
+                               <th class="text-center ">Resposta</th>
+                           </tr>
+                       </thead>
+                       <tbody>
+                           <% for (let i=0; i < options?.itens?.length; i++) { %>
+                               <tr>
+                                   <td><%= options?.itens[i]?.descricao %></td>
+                                   <td>
+                                       <input class="text-center " type="text" name="resposta" id="resposta" value="<%= options?.itens[i]?.resposta %>">
+                                        <input type="hidden" name='id' id="id-resposta" value="<%= options?.itens[i]?.id%>">
+                                    </td>
+                               </tr>
+                           <% } %>
+                       </tbody>
+                   </table>
+                   <button type="submit">Enviar</button>
+                </form>
+
+            </div>
+            <% } %>
+    </div>
+</body>
+
+</html>
+
+<!--every time select change, submit the form -->
+<!-- add all options value to body  -->
+
+<script>
+     $('#projeto').change(function() { 
+            $('#form-projeto').submit();
+        });
+       $('#projeto').val(<%- JSON.stringify(options.selected) %>);
+
+</script>
+
+
+

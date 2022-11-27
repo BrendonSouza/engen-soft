@@ -24,18 +24,24 @@
                 <div class="texto mt-5 row d-flex">
                     <input type="text" class="col-2" name="pre" value="O sistema deve" />
                     <div class="col-2">
-                        <select name="crud" class="form-select form-select-sm">
+                        <select id="crud" name="crud" class="form-select form-select-sm">
                             <option value="inserir">inserir</option>
                             <option value="excluir">excluir</option>
                             <option value="editar">editar</option>
                             <option value="atualizar">atualizar</option>
+                            <option id="so">outro</option>
                         </select>
-
+                        <!-- if select value is excluir dont show atributos -->
+                        
                     </div>
+                    <input type="text" class="col-2" name="outro" id="outro" placeholder="ação"/>
                     <input class="input-menor col-2 col-sm-12" type="text" name="um" value="um(a)" disabled />
                     <input type="text" name="entidade" placeholder="entidade"class="col-2" />
-                    <input class="input-menor col-2" type="text" name="com" value="com" disabled />
-                    <input type="text" name="atributos" placeholder="atributos" class="col-2"/>
+                    <div class="row texto mt-3">
+
+                        <input class="input-menor col-2" type="text" name="com" value="com" id="com" disabled />
+                        <input type="text" name="atributos" placeholder="atributos" id="atributos" class="col-2"/>
+                    </div>
                 </div>
                 <div class="ps-4">
                     <button type="submit">Enviar</button>
@@ -46,4 +52,36 @@
         </form>
     </body>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script>
+        //toda vez que atualizar o select, atualiza o value do input
+        $('#outro').hide();
+        $('#crud').change(function() {
+            if ($(this).val() == 'excluir') {
+        //hide atributos
+                $('#atributos').hide();
+                $('#com').hide();
+            } else {
+                $('#atributos').show();
+                $('#com').show();
+            }
+            if ($(this).val() == 'outro') {
+                $('#outro').show();
+            } else {
+                $('#outro').hide();
+            }
+            //a cada atualização em outro, atualiza o valor da option no select
+            $('#outro').change(function() {
+                $('#so').val($(this).val());
+                console.log($('#crud').val());
+            });
+        });
+        // var crud = document.getElementById("crud");
+        // if(crud.value == "excluir"){
+           
+            
+        // }
+        // console.log(crud.value)
+    </script>
 </html>

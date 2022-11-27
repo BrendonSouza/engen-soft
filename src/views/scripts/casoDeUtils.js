@@ -62,14 +62,14 @@ function init() {
                 $(go.Shape,  // the label background, which becomes transparent around the edges
                     {
                         fill: $(go.Brush, "Radial",
-                            { 0: "rgb(240, 240, 240)", 0.3: "rgb(240, 240, 240)", 1: "rgba(240, 240, 240, 0)" }),
+                            { 0: "rgba(240, 240, 240,0)", 0.3: "rgba(240, 240, 240,0)", 1: "rgba(240, 240, 240, 0)" }),
                         stroke: null
                     }),
                 $(go.TextBlock, "transition",  // the label text
                     {
                         textAlign: "center",
                         font: "10pt helvetica, arial, sans-serif",
-                        stroke: "black",
+                        stroke: "white",
                         margin: 4,
                         editable: true  // editing the text automatically updates the model data
                     },

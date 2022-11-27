@@ -7,6 +7,17 @@
 
     <body>
         <div class="p-5">
+            <h1>Tabela MES</h1>
+            <form action="/visualiza-req-func" method="post" id="form-projeto">
+                <select name="projeto" id="projeto" class="form-select form-select-sm">
+                    <option >Selecione um projeto</option>
+                    <% for (let i=0; i < options.projects.length; i++) { %>
+                        <option value="<%= options.projects[i].id %>">
+                            <%= options.projects[i].nome %>
+                        </option>
+                        <% } %>
+                </select> 
+            </form>
             <table class="table table-hover">
                 <thead>
                     <tr>
@@ -20,6 +31,7 @@
                         <th scope="col">Ações</th>
                     </tr>
                 </thead>
+                <% if(options.requisitos){ %>
                 <tbody>
 
                     <% for (let i=0; i < options.requisitos.length; i++) { %>
@@ -63,6 +75,7 @@
                         </tr>
                         <% } %>
                 </tbody>
+                <% } %>
 
             </table>
 
@@ -72,19 +85,26 @@
     </body>
     <script src="https://unpkg.com/gojs/release/go-debug.js"></script>
     <script id="code">
-        var nodes = <%- JSON.stringify(options.requisitos) %>;
-        //verifica click no botão
-        var btn = document.querySelector('button');
-        btn.addEventListener('click',()=>{
-            var diagrama = document.getElementById("myDiagramDiv");
-            if(diagrama.style.visibility == 'hidden'){
-                diagrama.style.visibility = 'visible';
-            }else{
-                diagrama.style.visibility = 'hidden';
-            }
-            
-            
-        })
+        $('#projeto').change(function() { 
+            $('#form-projeto').submit();
+        });
+        $('#projeto').val(<%- JSON.stringify(options.selected) %>);
     </script>
-    <script src="/scripts/casoDeUtils.js"></script>
+    <% if(options.codReq == 1){ %>
+        <script>
+            var nodes = <%- JSON.stringify(options.requisitos) %>;
+        //     //verifica click no botão
+            var btn = document.querySelector('button');
+            btn.addEventListener('click',()=>{
+                var diagrama = document.getElementById("myDiagramDiv");
+                if(diagrama.style.visibility == 'hidden'){
+                    diagrama.style.visibility = 'visible';
+                }else{
+                    diagrama.style.visibility = 'hidden';
+                }
+            })
+        </script>
+        <script src="/scripts/casoDeUtils.js"></script>
+    <% } %>
+    <!-- <script src="/scripts/casoDeUtils.js"></script> -->
 </html>
